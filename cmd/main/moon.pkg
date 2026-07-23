@@ -1,0 +1,7 @@
+import {
+  "Myyafa/moonbit-feature-forge" @lib,
+}
+
+options(
+  "is-main": true,
+)

@@ -1,10 +1,10 @@
-name = "Myyafa/moonbit-feature-forge"
+name = "Myytsjj/moonbit-feature-forge"
 
 version = "0.1.0"
 
 readme = "README.md"
 
-repository = "https://www.gitlink.org.cn/Myyafa/moonbit-feature-forge"
+repository = "https://github.com/Myytsjj/moonbit-feature-forge"
 
 license = "Apache-2.0"
 

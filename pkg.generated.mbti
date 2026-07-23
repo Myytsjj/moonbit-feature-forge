@@ -1,0 +1,83 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "lyjttio/moonbit-feature-forge"
+
+// Values
+pub fn compute_orb_descriptors(GrayImage, Array[Keypoint]) -> (Array[Keypoint], Array[Descriptor])
+
+pub fn compute_orientation(GrayImage, Keypoint) -> Double
+
+pub fn cross_check(Array[Match], Array[Match]) -> Array[Match]
+
+pub fn detect_fast(GrayImage, Int, Bool) -> Array[Keypoint]
+
+pub fn extract_features(GrayImage, Int) -> (Array[Keypoint], Array[Descriptor])
+
+pub fn full_feature_pipeline(GrayImage, GrayImage, Int, Double, Double) -> RansacResult
+
+pub fn hamming_distance(Descriptor, Descriptor) -> Int
+
+pub fn knn_match(Array[Descriptor], Array[Descriptor], Int) -> Array[Array[Match]]
+
+pub fn match_and_filter(Array[Descriptor], Array[Descriptor], Double) -> Array[Match]
+
+pub fn match_descriptors(Array[Descriptor], Array[Descriptor]) -> Array[Match]
+
+pub fn ransac_affine(Array[Match], Array[Keypoint], Array[Keypoint], Int, Double) -> RansacResult
+
+pub fn ratio_test(Array[Array[Match]], Double) -> Array[Match]
+
+// Errors
+
+// Types and methods
+pub(all) struct AffineTransform {
+  a : Double
+  b : Double
+  tx : Double
+  c : Double
+  d : Double
+  ty : Double
+}
+pub fn AffineTransform::apply(Self, Double, Double) -> (Double, Double)
+pub fn AffineTransform::identity() -> Self
+
+pub(all) struct Descriptor {
+  data : Array[Byte]
+}
+pub fn Descriptor::new(Int) -> Self
+
+pub(all) struct GrayImage {
+  width : Int
+  height : Int
+  data : Array[Int]
+}
+pub fn GrayImage::get(Self, Int, Int) -> Int
+pub fn GrayImage::new(Int, Int) -> Self
+pub fn GrayImage::set(Self, Int, Int, Int) -> Unit
+
+pub(all) struct Keypoint {
+  x : Int
+  y : Int
+  response : Double
+  angle : Double
+  octave : Int
+  size : Int
+}
+pub fn Keypoint::new(Int, Int, Double, Double) -> Self
+
+pub(all) struct Match {
+  query_idx : Int
+  train_idx : Int
+  distance : Int
+}
+pub fn Match::new(Int, Int, Int) -> Self
+
+pub(all) struct RansacResult {
+  transform : AffineTransform
+  inliers : Array[Match]
+  inlier_ratio : Double
+}
+
+// Type aliases
+
+// Traits
+

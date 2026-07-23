@@ -28,15 +28,39 @@
 ## 🏗️ 架构与设计 (Architecture)
 
 ```
-moonbit-feature-forge
-├── types.mbt                   # 图像、特征点、描述子与匹配对基础数据结构
-├── fast.mbt                    # FAST-9 角点检测与 NMS 非极大值抑制
-├── orb.mbt                     # 强度质心主方向与旋转 BRIEF 描述子生成
-├── matcher.mbt                 # Hamming 距离、KNN 匹配、Ratio Test 与 Cross-check
-├── ransac.mbt                  # RANSAC 仿射变换估计与误匹配剔除
-├── moonbit-feature-forge.mbt   # 统一导出的 Feature Forge Pipeline API
-├── moonbit-feature-forge_test.mbt # 单元测试与集成测试套件
-└── cmd/main/                   # 演示程序与性能 Benchmark 运行器
+                       +-----------------------+
+                       |    GrayImage Input    |
+                       +-----------+-----------+
+                                   |
+                                   v
+                       +-----------------------+
+                       |  FAST-9 Corner Detect |
+                       | (Bresenham + NMS Nbr) |
+                       +-----------+-----------+
+                                   |
+                                   v
+                       +-----------------------+
+                       |  Intensity Centroid   |
+                       | Orientation Calculation|
+                       +-----------+-----------+
+                                   |
+                                   v
+                       +-----------------------+
+                       |  Rotated BRIEF 256bit |
+                       | Descriptor Extraction |
+                       +-----------+-----------+
+                                   |
+                                   v
+                       +-----------------------+
+                       | Hamming Match & Ratio |
+                       |   Cross-Check Filter  |
+                       +-----------+-----------+
+                                   |
+                                   v
+                       +-----------------------+
+                       | RANSAC Affine Model   |
+                       | Outlier Rejection Fit |
+                       +-----------------------+
 ```
 
 ---
@@ -103,7 +127,7 @@ Pipeline execution finished successfully!
 ## 📖 API 用法示例 (Usage Example)
 
 ```moonbit
-import @lyjttio/moonbit-feature-forge as forge
+import @Myyafa/moonbit-feature-forge as forge
 
 fn example() {
   // 1. 创建灰度图像

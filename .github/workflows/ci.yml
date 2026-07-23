@@ -16,22 +16,27 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Setup MoonBit Toolchain
-        uses: moonbitlang/setup-moonbit@v1
-        with:
-          version: 'latest'
-
-      - name: Format Check
-        run: moon fmt --check
+      - name: Install MoonBit Toolchain
+        run: |
+          curl -fsSL https://cli.moonbitlang.com/install/unix_install.sh | bash
+          echo "$HOME/.moon/bin" >> $GITHUB_PATH
 
       - name: Code Check (Strict - Deny Warnings)
-        run: moon check --deny-warn
+        run: |
+          export PATH="$HOME/.moon/bin:$PATH"
+          moon check --deny-warn
 
       - name: Interface Info Check
-        run: moon info --deny-warn
+        run: |
+          export PATH="$HOME/.moon/bin:$PATH"
+          moon info --deny-warn
 
       - name: Run Unit Tests
-        run: moon test
+        run: |
+          export PATH="$HOME/.moon/bin:$PATH"
+          moon test
 
       - name: Run Demo Application
-        run: moon run cmd/main
+        run: |
+          export PATH="$HOME/.moon/bin:$PATH"
+          moon run cmd/main

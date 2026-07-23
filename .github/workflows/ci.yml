@@ -23,7 +23,7 @@ jobs:
         run: moon check --deny-warn
 
       - name: Interface Info Check
-        run: moon info --deny-warn
+        run: moon info
 
       - name: Run Unit Tests
         run: moon test

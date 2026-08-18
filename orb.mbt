@@ -1,6 +1,27 @@
 // ORB Descriptor Engine (Intensity Centroid Orientation & Rotated BRIEF 256-bit Descriptors)
 
 ///|
+pub(all) struct OrbConfig {
+  patch_radius : Int
+  descriptor_bits : Int
+  use_orientation : Bool
+}
+
+///|
+pub fn OrbConfig::new(
+  patch_radius : Int,
+  descriptor_bits : Int,
+  use_orientation : Bool,
+) -> OrbConfig {
+  { patch_radius, descriptor_bits, use_orientation }
+}
+
+///|
+pub fn OrbConfig::default() -> OrbConfig {
+  OrbConfig::new(16, 256, true)
+}
+
+///|
 // Standard 256 ORB sampling pair pattern offsets (-15 to 15)
 let orb_pattern : Array[(Int, Int, Int, Int)] = [
   (8, -3, 9, 5),
@@ -376,9 +397,25 @@ pub fn compute_orb_descriptors(
   img : GrayImage,
   kps : Array[Keypoint],
 ) -> (Array[Keypoint], Array[Descriptor]) {
+  compute_orb_descriptors_with_config(img, kps, OrbConfig::default())
+}
+
+///|
+pub fn compute_orb_descriptors_with_config(
+  img : GrayImage,
+  kps : Array[Keypoint],
+  config : OrbConfig,
+) -> (Array[Keypoint], Array[Descriptor]) {
   let valid_kps : Array[Keypoint] = []
   let descriptors : Array[Descriptor] = []
-  let border = 16
+  let border = if config.patch_radius < 15 { 15 } else { config.patch_radius }
+  let bits = if config.descriptor_bits < 1 {
+    1
+  } else if config.descriptor_bits > 256 {
+    256
+  } else {
+    config.descriptor_bits
+  }
 
   let mut idx = 0
   while idx < kps.length() {
@@ -387,7 +424,11 @@ pub fn compute_orb_descriptors(
       kp.x < img.width - border &&
       kp.y >= border &&
       kp.y < img.height - border {
-      let angle = compute_orientation(img, kp)
+      let angle = if config.use_orientation {
+        compute_orientation(img, kp)
+      } else {
+        0.0
+      }
       let oriented_kp = Keypoint::new(kp.x, kp.y, kp.response, angle)
 
       // Taylor expansion approximation for cos/sin in Double
@@ -402,10 +443,10 @@ pub fn compute_orb_descriptors(
       let cos_a = 1.0 - a2 / 2.0 + a2 * a2 / 24.0
       let sin_a = a - a2 * a / 6.0 + a2 * a2 * a / 120.0
 
-      let desc = Descriptor::new(32)
+      let desc = Descriptor::new((bits + 7) / 8)
 
       let mut pair_idx = 0
-      while pair_idx < 256 {
+      while pair_idx < bits {
         let (ax, ay, bx, by) = orb_pattern[pair_idx]
 
         let fax = Double::from_int(ax)

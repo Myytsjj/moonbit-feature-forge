@@ -1,6 +1,33 @@
 // FAST Corner Detector (FAST-9 algorithm with Non-Maximum Suppression)
 
 ///|
+pub(all) struct FastConfig {
+  threshold : Int
+  contiguous : Int
+  use_nms : Bool
+  max_keypoints : Int
+  border : Int
+  min_response : Double
+}
+
+///|
+pub fn FastConfig::new(
+  threshold : Int,
+  contiguous : Int,
+  use_nms : Bool,
+  max_keypoints : Int,
+  border : Int,
+  min_response : Double,
+) -> FastConfig {
+  { threshold, contiguous, use_nms, max_keypoints, border, min_response }
+}
+
+///|
+pub fn FastConfig::default() -> FastConfig {
+  FastConfig::new(20, 9, true, 0, 3, 0.0)
+}
+
+///|
 let circle_offsets : Array[(Int, Int)] = [
   (0, -3),
   (1, -3),
@@ -21,17 +48,26 @@ let circle_offsets : Array[(Int, Int)] = [
 ]
 
 ///|
-fn is_corner_fast9(
+fn is_corner_fast(
   img : GrayImage,
   x : Int,
   y : Int,
   threshold : Int,
+  contiguous : Int,
 ) -> (Bool, Double) {
   let center_val = img.get(x, y)
   let bright_thresh = center_val + threshold
   let dark_thresh = center_val - threshold
 
-  // Quick test: Check cardinal pixels 0, 8, 4, 12
+  let required = if contiguous < 1 {
+    1
+  } else if contiguous > 16 {
+    16
+  } else {
+    contiguous
+  }
+
+  // Quick test: Check cardinal pixels 0, 8, 4, 12 for FAST-9 and above.
   let p0 = img.get(x + circle_offsets[0].0, y + circle_offsets[0].1)
   let p8 = img.get(x + circle_offsets[8].0, y + circle_offsets[8].1)
   let p4 = img.get(x + circle_offsets[4].0, y + circle_offsets[4].1)
@@ -62,7 +98,7 @@ fn is_corner_fast9(
   }
 
   // Corner candidate must have at least 2 cardinal points matching
-  if count_bright < 2 && count_dark < 2 {
+  if required >= 9 && count_bright < 2 && count_dark < 2 {
     return (false, 0.0)
   }
 
@@ -75,7 +111,7 @@ fn is_corner_fast9(
     i = i + 1
   }
 
-  // Check for 9 contiguous pixels brighter or darker
+  // Check for the requested number of contiguous pixels brighter or darker.
   let mut is_corner = false
   let mut max_diff_sum = 0
 
@@ -85,7 +121,7 @@ fn is_corner_fast9(
     let mut contiguous_dark = true
     let mut diff_sum = 0
     let mut k = 0
-    while k < 9 {
+    while k < required {
       let idx = (start + k) % 16
       let val = ring[idx]
       if val <= bright_thresh {
@@ -117,23 +153,68 @@ pub fn detect_fast(
   threshold : Int,
   use_nms : Bool,
 ) -> Array[Keypoint] {
+  detect_fast_with_config(
+    img,
+    FastConfig::new(threshold, 9, use_nms, 0, 3, 0.0),
+  )
+}
+
+///|
+fn keypoint_before(left : Keypoint, right : Keypoint) -> Bool {
+  if left.response > right.response {
+    true
+  } else if left.response < right.response {
+    false
+  } else if left.y < right.y {
+    true
+  } else if left.y > right.y {
+    false
+  } else {
+    left.x < right.x
+  }
+}
+
+///|
+fn sort_keypoints(keypoints : Array[Keypoint]) -> Unit {
+  let mut i = 1
+  while i < keypoints.length() {
+    let current = keypoints[i]
+    let mut j = i
+    while j > 0 && keypoint_before(current, keypoints[j - 1]) {
+      keypoints[j] = keypoints[j - 1]
+      j = j - 1
+    }
+    keypoints[j] = current
+    i = i + 1
+  }
+}
+
+///|
+pub fn detect_fast_with_config(
+  img : GrayImage,
+  config : FastConfig,
+) -> Array[Keypoint] {
   let keypoints : Array[Keypoint] = []
-  let border = 3
-  if img.width < border * 2 || img.height < border * 2 {
+  let border = if config.border < 3 { 3 } else { config.border }
+  if img.width <= border * 2 || img.height <= border * 2 {
     return keypoints
   }
 
-  // Candidate grid
-  let score_grid = GrayImage::new(img.width, img.height)
+  let score_grid = Array::make(img.width * img.height, 0.0)
   let candidates : Array[(Int, Int, Double)] = []
-
   let mut y = border
   while y < img.height - border {
     let mut x = border
     while x < img.width - border {
-      let (is_corner, score) = is_corner_fast9(img, x, y, threshold)
-      if is_corner {
-        score_grid.set(x, y, score.to_int())
+      let (is_corner, score) = is_corner_fast(
+        img,
+        x,
+        y,
+        config.threshold,
+        config.contiguous,
+      )
+      if is_corner && score >= config.min_response {
+        score_grid[y * img.width + x] = score
         candidates.push((x, y, score))
       }
       x = x + 1
@@ -141,43 +222,49 @@ pub fn detect_fast(
     y = y + 1
   }
 
-  if !use_nms {
-    let mut idx = 0
-    while idx < candidates.length() {
-      let (cx, cy, cscore) = candidates[idx]
-      keypoints.push(Keypoint::new(cx, cy, cscore, 0.0))
-      idx = idx + 1
-    }
-    return keypoints
-  }
-
-  // Apply Non-Maximum Suppression (3x3 grid)
   let mut idx = 0
   while idx < candidates.length() {
     let (cx, cy, cscore) = candidates[idx]
     let mut is_local_max = true
-    let mut dy = -1
-    while dy <= 1 {
-      let mut dx = -1
-      while dx <= 1 {
-        if dx != 0 || dy != 0 {
-          let neighbor_score = Double::from_int(
-            score_grid.get(cx + dx, cy + dy),
-          )
-          if neighbor_score >= cscore {
+    if config.use_nms {
+      let mut dy = -1
+      while dy <= 1 {
+        let mut dx = -1
+        while dx <= 1 {
+          let nx = cx + dx
+          let ny = cy + dy
+          let neighbor_score = if nx >= 0 &&
+            nx < img.width &&
+            ny >= 0 &&
+            ny < img.height {
+            score_grid[ny * img.width + nx]
+          } else {
+            0.0
+          }
+          let earlier_tie = ny < cy || (ny == cy && nx < cx)
+          if (dx != 0 || dy != 0) &&
+            (
+              neighbor_score > cscore ||
+              (neighbor_score == cscore && earlier_tie)
+            ) {
             is_local_max = false
           }
+          dx = dx + 1
         }
-        dx = dx + 1
+        dy = dy + 1
       }
-      dy = dy + 1
     }
-
     if is_local_max {
       keypoints.push(Keypoint::new(cx, cy, cscore, 0.0))
     }
     idx = idx + 1
   }
 
+  sort_keypoints(keypoints)
+  if config.max_keypoints > 0 && keypoints.length() > config.max_keypoints {
+    while keypoints.length() > config.max_keypoints {
+      ignore(keypoints.pop())
+    }
+  }
   keypoints
 }

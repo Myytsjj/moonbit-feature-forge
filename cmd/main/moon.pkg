@@ -1,5 +1,6 @@
 import {
   "Myytsjj/moonbit-feature-forge" @lib,
+  "moonbitlang/core/env",
 }
 
 pkgtype(kind: "executable")

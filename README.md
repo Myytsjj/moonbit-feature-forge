@@ -29,8 +29,8 @@ Install the current stable MoonBit toolchain, then run the repository checks:
 moon version --all
 moon update
 moon fmt
-moon check --deny-warn --target all
-moon test --deny-warn --target all
+moon check --deny-warn
+moon test --deny-warn
 moon run cmd/main
 ```
 

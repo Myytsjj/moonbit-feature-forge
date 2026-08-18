@@ -1,6 +1,14 @@
 // MoonBit Feature Forge - Comprehensive Unit & Integration Tests
 
 ///|
+test "GrayImage rejects invalid dimensions with an empty image" {
+  let img = GrayImage::new(-2, 4)
+  assert_eq(img.width, 0)
+  assert_eq(img.height, 0)
+  assert_eq(img.get(0, 0), 0)
+}
+
+///|
 test "GrayImage initialization and pixel access" {
   let img = GrayImage::new(10, 10)
   assert_eq(img.width, 10)

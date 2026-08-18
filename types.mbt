@@ -10,6 +10,11 @@ pub(all) struct GrayImage {
 
 ///|
 pub fn GrayImage::new(width : Int, height : Int) -> GrayImage {
+  let (width, height) = if width <= 0 || height <= 0 {
+    (0, 0)
+  } else {
+    (width, height)
+  }
   let size = width * height
   let data = Array::make(size, 0)
   { width, height, data }

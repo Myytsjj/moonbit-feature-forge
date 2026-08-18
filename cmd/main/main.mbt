@@ -1,52 +1,85 @@
-// MoonBit Feature Forge - Demonstration & Benchmark Runner
+// MoonBit Feature Forge command-line demonstration and benchmark runner.
 
 ///|
-fn main {
-  println("==========================================================")
-  println("   MoonBit Feature Forge: High Performance Feature Engine ")
-  println("==========================================================")
-  println("Initializing synthetic images (120x120 pixels)...")
-
-  let img1 = @lib.GrayImage::new(120, 120)
-  let img2 = @lib.GrayImage::new(120, 120)
-
-  // Render high contrast geometric features (squares & circles)
-  let mut y = 30
-  while y <= 90 {
-    let mut x = 30
-    while x <= 90 {
-      if (x >= 40 && x <= 60 && y >= 40 && y <= 60) ||
-        (x - 75) * (x - 75) + (y - 75) * (y - 75) <= 144 {
-        img1.set(x, y, 240)
-        // Image 2 has translation (+4, +3)
-        img2.set(x + 4, y + 3, 240)
+fn make_scene(size : Int) -> (@lib.GrayImage, @lib.GrayImage) {
+  let first = @lib.GrayImage::new(size, size)
+  let second = @lib.GrayImage::new(size, size)
+  let mut y = 18
+  while y < size - 18 {
+    let mut x = 18
+    while x < size - 18 {
+      let square = x >= 32 && x < 58 && y >= 32 && y < 58
+      let ring = (x - size / 2) * (x - size / 2) +
+        (y - size / 2) * (y - size / 2) <=
+        20 * 20
+      let diagonal = (x - y >= -2 && x - y <= 2) ||
+        (x + y >= size - 3 && x + y <= size + 1)
+      if square || ring || diagonal {
+        first.set(x, y, 240)
+        let tx = x + 4
+        let ty = y + 3
+        if tx < size && ty < size {
+          second.set(tx, ty, 240)
+        }
       }
       x = x + 1
     }
     y = y + 1
   }
+  (first, second)
+}
 
-  println("Step 1: Extracting FAST keypoints & ORB 256-bit descriptors...")
-  let (kps1, descs1) = @lib.extract_features(img1, 25)
-  let (kps2, descs2) = @lib.extract_features(img2, 25)
-
-  println(" -> Image 1 detected \{kps1.length()} keypoints & descriptors.")
-  println(" -> Image 2 detected \{kps2.length()} keypoints & descriptors.")
-
-  println("\nStep 2: Performing Hamming distance matching & ratio test...")
-  let matches = @lib.match_and_filter(descs1, descs2, 0.85)
-  println(" -> Found \{matches.length()} valid feature match pairs.")
-
+///|
+fn run_demo() -> Unit {
+  let (first, second) = make_scene(120)
+  let result = @lib.run_pipeline(first, second, @lib.FeatureConfig::default())
+  println("MoonBit Feature Forge")
+  println("pipeline=demo size=120x120")
   println(
-    "\nStep 3: Executing RANSAC 2D affine model fitting & inlier filtering...",
+    "features1=\{result.keypoints1.length()} features2=\{result.keypoints2.length()} matches=\{result.matches.length()}",
   )
-  let ransac_res = @lib.ransac_affine(matches, kps1, kps2, 100, 4.0)
-  let tf = ransac_res.transform
+  println(
+    "affine_inliers=\{result.affine.inliers.length()} homography_inliers=\{result.homography.inliers.length()}",
+  )
+  println(
+    "affine_ratio=\{result.affine.inlier_ratio} homography_rms=\{result.homography.stats.rms}",
+  )
+  println(@lib.format_pipeline_summary(result))
+}
 
-  println(" -> RANSAC Inlier Count: \{ransac_res.inliers.length()}")
-  println(" -> Inlier Ratio: \{ransac_res.inlier_ratio * 100.0}%")
-  println(" -> Estimated Affine Matrix: [a: \{tf.a}, b: \{tf.b}, tx: \{tf.tx}]")
-  println("                            [c: \{tf.c}, d: \{tf.d}, ty: \{tf.ty}]")
-  println("==========================================================")
-  println("Pipeline execution finished successfully!")
+///|
+fn run_benchmark() -> Unit {
+  let (first, second) = make_scene(160)
+  let iterations = 3
+  let config = @lib.FeatureConfig::default()
+  let start = @env.now()
+  let mut last = @lib.run_pipeline(first, second, config)
+  let mut iteration = 1
+  while iteration < iterations {
+    last = @lib.run_pipeline(first, second, config)
+    iteration = iteration + 1
+  }
+  let elapsed = @env.now() - start
+  let report = @lib.BenchmarkResult::new(
+    160,
+    160,
+    iterations,
+    last.keypoints1.length(),
+    last.keypoints2.length(),
+    last.matches.length(),
+    last.homography.inlier_ratio,
+    elapsed.to_double(),
+  )
+  println(@lib.format_benchmark_summary(report))
+  println("target=default seed=42")
+}
+
+///|
+fn main {
+  let args = @env.args()
+  if args.length() > 1 && args[1] == "benchmark" {
+    run_benchmark()
+  } else {
+    run_demo()
+  }
 }

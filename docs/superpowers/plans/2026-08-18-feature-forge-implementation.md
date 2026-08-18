@@ -348,7 +348,35 @@
   ```powershell
   git add *.mbt
   git commit -m "test: cover feature forge boundary and degenerate cases"
-  ```
+```
+
+### Task 8A: Add production-grade analysis depth and reach the source-scale target
+
+**Files:**
+- Create: `image_analysis.mbt`, `image_analysis_test.mbt`
+- Create: `feature_analysis.mbt`, `feature_analysis_test.mbt`
+- Create: `matching_analysis.mbt`, `matching_analysis_test.mbt`
+- Create: `geometry_analysis.mbt`, `geometry_analysis_test.mbt`
+- Create: `pipeline_analysis.mbt`, `pipeline_analysis_test.mbt`
+
+**Interfaces:**
+- Add integral-image statistics, adaptive thresholding, morphology, connected components, region descriptors, descriptor batch summaries, match-graph consistency, geometric quality reports, RANSAC confidence helpers, and benchmark aggregation.
+- Keep all functions deterministic and pure MoonBit; all result types remain in the public root package and handle empty/degenerate inputs explicitly.
+
+- [ ] Step 1: Add failing edge tests for zero-sized images, clipped windows, empty regions, duplicate descriptors, disconnected match graphs, degenerate quadrilaterals, and zero-sample benchmark aggregates.
+- [ ] Step 2: Implement image analysis and region extraction using integral sums and explicit bounds.
+- [ ] Step 3: Implement feature and matching diagnostics that consume existing keypoints, descriptors, and matches without changing their semantics.
+- [ ] Step 4: Implement geometric quality and RANSAC confidence helpers over existing models and residual statistics.
+- [ ] Step 5: Implement pipeline-level report aggregation and test deterministic summaries.
+- [ ] Step 6: Run the source-count script; require production `.mbt` lines above 8,000 with no generated or duplicate filler code.
+- [ ] Step 7: Run the complete check/test/coverage suite and commit the depth expansion.
+
+```powershell
+moon check --deny-warn
+moon test
+./scripts/count_moonbit_lines.ps1
+git commit -m "feat: add production analysis and diagnostics"
+```
 
 ---
 

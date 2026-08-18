@@ -7,7 +7,7 @@ fn popcount8(val : Byte) -> Int {
   let mut v = val.to_int()
   v = v - ((v >> 1) & 0x55)
   v = (v & 0x33) + ((v >> 2) & 0x33)
-  ((v + (v >> 4)) & 0x0F)
+  (v + (v >> 4)) & 0x0F
 }
 
 ///|
@@ -30,7 +30,7 @@ pub fn hamming_distance(d1 : Descriptor, d2 : Descriptor) -> Int {
 ///|
 pub fn match_descriptors(
   query : Array[Descriptor],
-  train : Array[Descriptor]
+  train : Array[Descriptor],
 ) -> Array[Match] {
   let matches : Array[Match] = []
   let mut q_idx = 0
@@ -62,7 +62,7 @@ pub fn match_descriptors(
 pub fn knn_match(
   query : Array[Descriptor],
   train : Array[Descriptor],
-  k : Int
+  k : Int,
 ) -> Array[Array[Match]] {
   let results : Array[Array[Match]] = []
   if k <= 0 || train.length() == 0 {
@@ -115,7 +115,7 @@ pub fn knn_match(
 ///|
 pub fn ratio_test(
   knn_matches : Array[Array[Match]],
-  ratio : Double
+  ratio : Double,
 ) -> Array[Match] {
   let filtered : Array[Match] = []
   let mut i = 0
@@ -138,7 +138,7 @@ pub fn ratio_test(
 ///|
 pub fn cross_check(
   matches_12 : Array[Match],
-  matches_21 : Array[Match]
+  matches_21 : Array[Match],
 ) -> Array[Match] {
   let verified : Array[Match] = []
   let mut i = 0

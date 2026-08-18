@@ -1,5 +1,6 @@
 // MoonBit Feature Forge - Demonstration & Benchmark Runner
 
+///|
 fn main {
   println("==========================================================")
   println("   MoonBit Feature Forge: High Performance Feature Engine ")
@@ -36,18 +37,16 @@ fn main {
   let matches = @lib.match_and_filter(descs1, descs2, 0.85)
   println(" -> Found \{matches.length()} valid feature match pairs.")
 
-  println("\nStep 3: Executing RANSAC 2D affine model fitting & inlier filtering...")
+  println(
+    "\nStep 3: Executing RANSAC 2D affine model fitting & inlier filtering...",
+  )
   let ransac_res = @lib.ransac_affine(matches, kps1, kps2, 100, 4.0)
   let tf = ransac_res.transform
 
   println(" -> RANSAC Inlier Count: \{ransac_res.inliers.length()}")
   println(" -> Inlier Ratio: \{ransac_res.inlier_ratio * 100.0}%")
-  println(
-    " -> Estimated Affine Matrix: [a: \{tf.a}, b: \{tf.b}, tx: \{tf.tx}]",
-  )
-  println(
-    "                            [c: \{tf.c}, d: \{tf.d}, ty: \{tf.ty}]",
-  )
+  println(" -> Estimated Affine Matrix: [a: \{tf.a}, b: \{tf.b}, tx: \{tf.tx}]")
+  println("                            [c: \{tf.c}, d: \{tf.d}, ty: \{tf.ty}]")
   println("==========================================================")
   println("Pipeline execution finished successfully!")
 }

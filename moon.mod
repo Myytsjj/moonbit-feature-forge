@@ -1,6 +1,6 @@
 name = "Myytsjj/moonbit-feature-forge"
 
-version = "0.1.0"
+version = "0.2.0"
 
 readme = "README.md"
 
@@ -12,4 +12,4 @@ keywords = [ "feature-detection", "fast", "orb", "ransac", "computer-vision" ]
 
 preferred_target = "wasm-gc"
 
-description = "MoonBit 局部特征引擎 (FAST, BRIEF/ORB, Hamming Matcher & RANSAC)"
+description = "Pure MoonBit 2D local features, binary matching, geometric registration, and diagnostics"

@@ -1,32 +1,54 @@
-name: CI
+name: Check and Test
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
+  push:
     branches:
       - main
 
 jobs:
-  test:
-    name: Build & Test
-    runs-on: ubuntu-latest
+  build:
+    permissions:
+      contents: read
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
-      - name: Setup MoonBit Environment
-        uses: hustcer/setup-moonbit@v1
+      - name: Install MoonBit on Unix
+        if: ${{ matrix.os != 'windows-latest' }}
+        run: |
+          curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash
+          echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
 
-      - name: Code Check (Strict - Deny Warnings)
-        run: moon check --deny-warn
+      - name: Install MoonBit on Windows
+        if: ${{ matrix.os == 'windows-latest' }}
+        run: |
+          Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+          irm https://cli.moonbitlang.com/install/powershell.ps1 | iex
+          "C:\Users\runneradmin\.moon\bin" | Out-File -FilePath $env:GITHUB_PATH -Append
 
-      - name: Interface Info Check
-        run: moon info
+      - name: Verify toolchain and dependencies
+        run: |
+          moon version --all
+          moon update
 
-      - name: Run Unit Tests
-        run: moon test
+      - name: Check all targets
+        run: moon check --deny-warn --target all
 
-      - name: Run Demo Application
+      - name: Test all targets
+        run: moon test --deny-warn --target all
+
+      - name: Verify formatting and generated interfaces
+        run: |
+          moon fmt
+          git diff --exit-code
+          moon info
+          git diff --exit-code
+
+      - name: Run CLI demo
         run: moon run cmd/main

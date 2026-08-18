@@ -1,154 +1,141 @@
-# MoonBit Feature Forge (局部特征引擎)
+# MoonBit Feature Forge
 
-[![CI](https://github.com/lyjttio/moonbit-feature-forge/actions/workflows/ci.yml/badge.svg)](https://github.com/lyjttio/moonbit-feature-forge/actions/workflows/ci.yml)
-[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
-[![MoonBit Version](https://img.shields.io/badge/MoonBit-v0.10.4+-brightgreen)](https://www.moonbitlang.cn/)
+[![CI](https://github.com/Myytsjj/moonbit-feature-forge/actions/workflows/ci.yml/badge.svg)](https://github.com/Myytsjj/moonbit-feature-forge/actions/workflows/ci.yml)
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 
-**`moonbit-feature-forge`** 是一个完全基于 **MoonBit** 原生构建的高性能 2D 局部特征提取、描述与鲁棒匹配引擎。该引擎专为 WebAssembly 跨平台计算与高性能图像处理设计，无需外部原生 C/C++ 依赖，实现了包括 FAST-9 角点检测、强度质心法方向计算、旋转 BRIEF 256 位二进制描述子 (ORB)、Hamming 距离高效匹配以及 RANSAC 2D 仿射变换估计等全套计算机视觉核心算法。
+MoonBit Feature Forge is a pure-MoonBit 2D local-feature toolkit for grayscale image analysis, descriptor matching, geometric registration, and deterministic diagnostics. It is designed as a small, composable building block for image alignment, tracking, inspection, and research prototypes without a native C/C++ dependency.
 
----
+## Project positioning
 
-## 🌟 核心特性 (Key Features)
+The library covers the part of a vision workflow between a grayscale image buffer and a verified geometric correspondence. It keeps image storage explicit, makes border and degenerate-input behavior deterministic, and exposes both the core pipeline and the measurements needed to inspect a run.
 
-- ⚡ **FAST-9 角点检测 (FAST-9 Corner Detector)**
-  - 基于 16 像素 Bresenham 环与 9 连续像素快速筛选机制。
-  - 支持 $3 \times 3$ 邻域非极大值抑制 (Non-Maximum Suppression, NMS)。
-- 🎯 **ORB 描述子引擎 (Oriented FAST & Rotated BRIEF)**
-  - 基于圆形 Patch 强度质心法 (Intensity Centroid Method) 自动计算特征点主方向 $\theta$。
-  - 支持 256 对可转动采样点的 32 字节 (256-bit) 二进制描述子生成。
-- 🔍 **高效匹配器与多级过滤 (Matching & Filtering Engine)**
-  - 位运算优化 (Popcount) 的 Hamming 距离快速计算。
-  - 支持 Top-$k$ KNN 邻近匹配、Lowe's Ratio Test 比例筛选以及 Cross-check 交叉验证。
-- 🛡️ **RANSAC 仿射模型拟合 (RANSAC Outlier Rejection)**
-  - 基于 3 点对 Cramer 法则估计 2D 仿射变换矩阵 $\begin{bmatrix} a & b & tx \\ c & d & ty \end{bmatrix}$。
-  - 迭代剔除误匹配点 (Outliers)，精确输出局内点 (Inliers) 与变换参数。
+## Core capabilities
 
----
+- Safe `GrayImage` construction, sampling, cropping, resizing, translation, rotation, histograms, integral statistics, morphology, connected components, and texture summaries.
+- Box, triangle, Gaussian-like, rank, Sobel, Laplacian, contrast, adaptive-threshold, and pyramid preprocessing.
+- Configurable FAST keypoint detection, non-maximum suppression, orientation-aware ORB/BRIEF descriptors, and multiscale coordinate mapping.
+- Hamming matching with KNN, ratio filtering, mutual matching, unique-train constraints, and an exact descriptor index.
+- Affine and homography estimation, reprojection diagnostics, deterministic RANSAC, residual analysis, and model comparison.
+- Image warping, translation and patch search, keypoint-grid indexing, frame-to-frame association, feature tracks, and quality dashboards.
+- A runnable CLI demo and benchmark with machine-readable `key=value` output.
 
-## 🏗️ 架构与设计 (Architecture)
+The package intentionally does not include codecs, GUI bindings, networking, or platform-specific native code. Applications can connect their own image decoder or camera layer to `GrayImage`.
 
-```
-                       +-----------------------+
-                       |    GrayImage Input    |
-                       +-----------+-----------+
-                                   |
-                                   v
-                       +-----------------------+
-                       |  FAST-9 Corner Detect |
-                       | (Bresenham + NMS Nbr) |
-                       +-----------+-----------+
-                                   |
-                                   v
-                       +-----------------------+
-                       |  Intensity Centroid   |
-                       | Orientation Calculation|
-                       +-----------+-----------+
-                                   |
-                                   v
-                       +-----------------------+
-                       |  Rotated BRIEF 256bit |
-                       | Descriptor Extraction |
-                       +-----------+-----------+
-                                   |
-                                   v
-                       +-----------------------+
-                       | Hamming Match & Ratio |
-                       |   Cross-Check Filter  |
-                       +-----------+-----------+
-                                   |
-                                   v
-                       +-----------------------+
-                       | RANSAC Affine Model   |
-                       | Outlier Rejection Fit |
-                       +-----------------------+
-```
+## Quick start
 
----
+Install the current stable MoonBit toolchain, then run the repository checks:
 
-## 🚀 快速开始 (Quick Start)
-
-### 1. 环境准备 (Prerequisites)
-
-确保本地已安装最新的 MoonBit 工具链：
-
-```bash
-moon version
-```
-
-### 2. 编译与检查 (Build & Check)
-
-```bash
-# 格式化代码
+```powershell
+moon version --all
+moon update
 moon fmt
-
-# 严格类型检查 (无 Warning)
-moon check --deny-warn
-
-# 导出接口检查
-moon info --deny-warn
-```
-
-### 3. 运行测试 (Run Tests)
-
-```bash
-moon test
-```
-
-### 4. 运行演示程序 (Run Demo Benchmark)
-
-```bash
+moon check --deny-warn --target all
+moon test --deny-warn --target all
 moon run cmd/main
 ```
 
-示例输出：
-```text
-==========================================================
-   MoonBit Feature Forge: High Performance Feature Engine 
-==========================================================
-Initializing synthetic images (120x120 pixels)...
-Step 1: Extracting FAST keypoints & ORB 256-bit descriptors...
- -> Image 1 detected 36 keypoints & descriptors.
- -> Image 2 detected 36 keypoints & descriptors.
-
-Step 2: Performing Hamming distance matching & ratio test...
- -> Found 36 valid feature match pairs.
-
-Step 3: Executing RANSAC 2D affine model fitting & inlier filtering...
- -> RANSAC Inlier Count: 36
- -> Inlier Ratio: 100%
- -> Estimated Affine Matrix: [a: 1, b: 0, tx: 4]
-                            [c: 0, d: 1, ty: 3]
-==========================================================
-Pipeline execution finished successfully!
-```
-
----
-
-## 📖 API 用法示例 (Usage Example)
+Use the library from another MoonBit package:
 
 ```moonbit
-import @Myyafa/moonbit-feature-forge as forge
+import {
+  "Myytsjj/moonbit-feature-forge" @forge,
+}
 
-fn example() {
-  // 1. 创建灰度图像
-  let img1 = @forge.GrayImage::new(100, 100)
-  let img2 = @forge.GrayImage::new(100, 100)
-  
-  // 2. 提取特征点与 ORB 描述子
-  let (kps1, descs1) = @forge.extract_features(img1, 25)
-  let (kps2, descs2) = @forge.extract_features(img2, 25)
-  
-  // 3. 特征匹配与 Ratio Test 筛选
-  let good_matches = @forge.match_and_filter(descs1, descs2, 0.8)
-  
-  // 4. RANSAC 几何拟合
-  let result = @forge.ransac_affine(good_matches, kps1, kps2, 100, 3.0)
-  println("Found \{result.inliers.length()} robust inlier matches.")
+fn register(reference : @forge.GrayImage, moving : @forge.GrayImage) -> Unit {
+  let result = @forge.run_pipeline(
+    reference,
+    moving,
+    @forge.FeatureConfig::default(),
+  )
+  println(@forge.format_pipeline_summary(result))
 }
 ```
 
----
+Invalid dimensions produce an empty image, out-of-range writes are ignored, and sampling always follows the selected `BorderMode`.
 
-## 📄 开源许可证 (License)
+## CLI
 
-本项目基于 [Apache License 2.0](LICENSE) 许可证开源。
+The default command builds a deterministic synthetic translation scene and runs the complete pipeline:
+
+```powershell
+moon run cmd/main
+```
+
+Measured demo output on the local toolchain:
+
+```text
+MoonBit Feature Forge
+pipeline=demo size=120x120
+features1=26 features2=25 matches=23
+affine_inliers=23 homography_inliers=23
+affine_ratio=1 homography_rms=0
+features1=26 features2=25 matches=23 distance_mean=0 affine_inliers=23 homography_inliers=23
+```
+
+Run the benchmark workload with:
+
+```powershell
+moon run cmd/main -- benchmark
+```
+
+The CLI prints dimensions, iteration count, feature counts, match count, inlier ratio, total wall-clock time, target, and seed. See [benchmarks/README.md](benchmarks/README.md) for the recorded run and reproduction details.
+
+## Architecture
+
+```text
+GrayImage
+   │
+   ├── sampling / filters / integral analysis / pyramid
+   │
+   ├── FAST ──► keypoints ──► ORB/BRIEF descriptors
+   │                              │
+   │                              ├── KNN / ratio / mutual / index matching
+   │                              │
+   │                              └── affine + homography RANSAC
+   │                                         │
+   └── warping / tracking / quality reports ◄┘
+```
+
+The public root package owns the data types and algorithms. The `cmd/main` package is a thin executable that constructs synthetic input and calls the public API. Analysis modules consume the same `GrayImage`, `Keypoint`, `Descriptor`, `Match`, and model types, so diagnostics do not require a second representation.
+
+## API areas
+
+| Area | Representative entry points |
+| --- | --- |
+| Image data | `GrayImage::new`, `sample`, `sample_bilinear`, `crop`, `resize_nearest` |
+| Preprocessing | `box_blur`, `sobel_gradients`, `ImagePyramid::build`, `adaptive_threshold` |
+| Features | `FastConfig`, `detect_fast_with_config`, `OrbConfig`, `compute_orb_descriptors_with_config` |
+| Matching | `MatchPolicy`, `match_with_policy`, `mutual_match`, `DescriptorIndex::query` |
+| Geometry | `estimate_homography`, `Homography::project`, `reprojection_stats`, `ransac_homography` |
+| Pipeline | `FeatureConfig`, `run_pipeline`, `analyze_pipeline`, `build_quality_dashboard` |
+| Tracking | `KeypointGridIndex`, `associate_keypoints`, `FeatureTrack`, `update_tracks` |
+
+## Benchmarks
+
+The checked-in benchmark uses a 160×160 synthetic scene, three complete pipeline iterations, default FAST/ORB and matching configuration, and seed `42`. A local run on 2026-08-18 with MoonBit `0.1.20260814`, `moonc v0.10.8+8606a5800`, Windows x64 produced:
+
+| Workload | Size | Iterations | Features | Matches | Homography inlier ratio | Total |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Synthetic translation | 160×160 | 3 | 32 / 31 | 29 | 1.0 | 26 ms |
+
+`total_ms` is wall-clock time for all iterations and will vary with machine load. Feature, match, ratio, dimensions, and seed fields are the reproducibility signals; the full raw output is in [benchmarks/README.md](benchmarks/README.md).
+
+## Tests
+
+Run the complete test suite with:
+
+```powershell
+moon test --deny-warn
+```
+
+The suite includes 73 tests covering empty and invalid images, all border modes, clipped windows, filtering and morphology boundaries, deterministic keypoint ordering, descriptor length mismatches, empty indexes, stable ties, invalid match indices, collinear geometry, RANSAC outliers, pipeline determinism, warping, tracking, quality reports, and benchmark aggregation.
+
+## CI
+
+GitHub Actions runs the project on Linux, macOS, and Windows. Each job installs the stable MoonBit toolchain, updates dependencies, verifies formatting and generated interfaces, checks all targets, runs all tests, and executes the CLI demo. The workflow is [`.github/workflows/ci.yml`](.github/workflows/ci.yml).
+
+Package publication is kept in a separate manually triggered workflow at [`.github/workflows/publish.yml`](.github/workflows/publish.yml); it expects a repository secret named `MOONCAKES_TOKEN` and never stores credentials in the repository.
+
+## License
+
+MoonBit Feature Forge is distributed under the [Apache License 2.0](LICENSE).

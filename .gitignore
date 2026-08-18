@@ -4,3 +4,8 @@ target/
 target
 .mooncakes/
 .moonagent/
+.firecrawl/
+coverage/
+*.coverage
+benchmarks/*.out
+benchmarks/*.log

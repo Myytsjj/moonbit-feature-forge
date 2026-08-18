@@ -2,33 +2,692 @@
 package "Myytsjj/moonbit-feature-forge"
 
 // Values
+pub fn active_tracks(Array[FeatureTrack]) -> Array[FeatureTrack]
+
+pub fn adaptive_threshold(GrayImage, Int, Int) -> GrayImage
+
+pub fn affine_bounds(AffineTransform, Int, Int) -> Rect
+
+pub fn affine_model_residual_summary(AffineTransform, Array[FloatPoint2], Array[FloatPoint2], Double) -> ResidualSummary
+
+pub fn affine_quality(RansacResult) -> Double
+
+pub fn affine_residual_profile(AffineTransform, Array[FloatPoint2], Array[FloatPoint2]) -> Array[Double]
+
+pub fn affine_transform_points(AffineTransform, Array[FloatPoint2]) -> Array[FloatPoint2]
+
+pub fn aggregate_benchmarks(Array[BenchmarkResult]) -> BenchmarkAggregate
+
+pub fn analyze_pipeline(PipelineResult) -> PipelineReport
+
+pub fn apply_kernel_horizontal(GrayImage, Kernel1D) -> GrayImage
+
+pub fn apply_kernel_vertical(GrayImage, Kernel1D) -> GrayImage
+
+pub fn apply_match_mask(Array[Match], Array[Bool]) -> Array[Match]
+
+pub fn apply_separable_kernel(GrayImage, Kernel1D) -> GrayImage
+
+pub fn apply_translation(GrayImage, Double, Double) -> GrayImage
+
+pub fn associate_keypoints(Array[Keypoint], Array[Descriptor], Array[Keypoint], Array[Descriptor], Int, Double) -> Array[FeatureAssociation]
+
+pub fn association_mean_distance(Array[FeatureAssociation]) -> Double
+
+pub fn association_quality(Array[FeatureAssociation], Int, Double) -> Double
+
+pub fn association_spatial_histogram(Array[FeatureAssociation], Int, Double) -> Array[Int]
+
+pub fn associations_to_matches(Array[FeatureAssociation]) -> Array[Match]
+
+pub fn average_descriptor(Array[Descriptor]) -> Descriptor
+
+pub fn benchmark_average_latency(BenchmarkAggregate) -> Double
+
+pub fn benchmark_feature_rate(BenchmarkResult) -> Double
+
+pub fn benchmark_match_rate(BenchmarkResult) -> Double
+
+pub fn benchmark_relative_latency(BenchmarkResult, BenchmarkResult) -> Double
+
+pub fn benchmark_results_are_comparable(BenchmarkResult, BenchmarkResult) -> Bool
+
+pub fn benchmark_speedup(BenchmarkAggregate, BenchmarkAggregate) -> Double
+
+pub fn benchmark_throughput(BenchmarkAggregate) -> Double
+
+pub fn best_threshold_trial(Array[ThresholdTrial]) -> ThresholdTrial?
+
+pub fn binary_boundary(GrayImage, Int) -> GrayImage
+
+pub fn binary_close(GrayImage, Int) -> GrayImage
+
+pub fn binary_dilate(GrayImage, Int) -> GrayImage
+
+pub fn binary_erode(GrayImage, Int) -> GrayImage
+
+pub fn binary_iou(GrayImage, GrayImage) -> Double
+
+pub fn binary_open(GrayImage, Int) -> GrayImage
+
+pub fn binary_threshold(GrayImage, Int) -> GrayImage
+
+pub fn blend_registered(GrayImage, GrayImage, Homography, Double) -> GrayImage
+
+pub fn block_texture_histogram(GrayImage, Rect) -> Array[Int]
+
+pub fn bounds_are_ordered(Rect) -> Bool
+
+pub fn box_blur(GrayImage, Int) -> GrayImage
+
+pub fn brightness_normalize(GrayImage, Double) -> GrayImage
+
+pub fn build_quality_dashboard(GrayImage, GrayImage, PipelineResult) -> QualityDashboard
+
+pub fn choose_fast_threshold(Array[ThresholdTrial], Int) -> Int?
+
+pub fn clamp_quality(Double) -> Double
+
+pub fn column_projection(GrayImage) -> Array[Int]
+
+pub fn compare_models(RansacResult, HomographyRansacResult, Double, Double) -> ModelComparison
+
+pub fn compare_photometric(GrayImage, GrayImage) -> PhotometricComparison
+
+pub fn compare_snapshots(FeatureSnapshot, FeatureSnapshot) -> SnapshotDelta
+
+pub fn compose_homographies(Homography, Homography) -> Homography
+
 pub fn compute_orb_descriptors(GrayImage, Array[Keypoint]) -> (Array[Keypoint], Array[Descriptor])
+
+pub fn compute_orb_descriptors_with_config(GrayImage, Array[Keypoint], OrbConfig) -> (Array[Keypoint], Array[Descriptor])
 
 pub fn compute_orientation(GrayImage, Keypoint) -> Double
 
+pub fn consensus_velocity(Array[FeatureTrack]) -> FloatPoint2
+
+pub fn consistent_match_subset(Array[Match], Array[Keypoint], Array[Keypoint], Double) -> Array[Match]
+
+pub fn contrast_stretch(GrayImage, Int, Int) -> GrayImage
+
+pub fn convex_hull(Array[FloatPoint2]) -> Array[FloatPoint2]
+
+pub fn counts_are_nonnegative(Array[Int]) -> Bool
+
+pub fn crop_registered_pair(GrayImage, GrayImage, Rect) -> (GrayImage, GrayImage)
+
 pub fn cross_check(Array[Match], Array[Match]) -> Array[Match]
+
+pub fn dashboard_descriptor_balance(QualityDashboard) -> Double
+
+pub fn dashboard_is_valid(QualityDashboard) -> Bool
+
+pub fn dashboard_match_density(QualityDashboard) -> Double
+
+pub fn dashboard_pass_rate(Array[QualityDashboard]) -> Double
+
+pub fn dashboard_score(QualityDashboard) -> Double
+
+pub fn decompose_affine(AffineTransform) -> AffineDecomposition
+
+pub fn describe_patch(GrayImage, Keypoint, Int) -> PatchStats
+
+pub fn descriptor_batch_hamming(Descriptor, Array[Descriptor]) -> Array[Int]
+
+pub fn descriptor_batch_search_report(DescriptorIndex, Array[Descriptor], Int) -> DescriptorSearchReport
+
+pub fn descriptor_bit_fraction(Descriptor) -> Double
+
+pub fn descriptor_bit_histogram(Array[Descriptor]) -> Array[Int]
+
+pub fn descriptor_bit_slice(Descriptor, Int, Int) -> Descriptor
+
+pub fn descriptor_byte_histogram(Array[Descriptor]) -> Array[Int]
+
+pub fn descriptor_checksum(Descriptor) -> Int
+
+pub fn descriptor_concat(Descriptor, Descriptor) -> Descriptor
+
+pub fn descriptor_copy(Descriptor) -> Descriptor
+
+pub fn descriptor_count_difference(Array[Descriptor], Array[Descriptor]) -> Int
+
+pub fn descriptor_distance_matrix(Array[Descriptor], Array[Descriptor]) -> Array[Array[Int]]
+
+pub fn descriptor_distance_profile(Array[Descriptor]) -> Array[Double]
+
+pub fn descriptor_distance_quantiles(Descriptor, Array[Descriptor]) -> (Int, Int, Int)
+
+pub fn descriptor_duplicate_fraction(Array[Descriptor]) -> Double
+
+pub fn descriptor_hamming_histogram(Array[Descriptor], Array[Descriptor], Int) -> Array[Int]
+
+pub fn descriptor_hamming_similarity(Descriptor, Descriptor) -> Double
+
+pub fn descriptor_index_batch_query(DescriptorIndex, Array[Descriptor], Int) -> Array[Array[Match]]
+
+pub fn descriptor_index_stats(DescriptorIndex) -> DescriptorBucketStats
+
+pub fn descriptor_interpolate(Descriptor, Descriptor, Double) -> Descriptor
+
+pub fn descriptor_mask(Descriptor, Descriptor) -> Descriptor
+
+pub fn descriptor_mean_profile(Array[Descriptor]) -> Array[Double]
+
+pub fn descriptor_nonzero_fraction(Descriptor) -> Double
+
+pub fn descriptor_or(Descriptor, Descriptor) -> Descriptor
+
+pub fn descriptor_pack_bits(Array[Bool]) -> Descriptor
+
+pub fn descriptor_popcount(Descriptor) -> Int
+
+pub fn descriptor_precision_at_k(Array[Array[Match]], Array[Int], Int) -> Double
+
+pub fn descriptor_prefix(Descriptor, Int) -> Descriptor
+
+pub fn descriptor_quality_report(Array[Descriptor]) -> DescriptorQualityReport
+
+pub fn descriptor_recall_at_k(Array[Array[Match]], Array[Int], Int) -> Double
+
+pub fn descriptor_reverse_bits(Descriptor) -> Descriptor
+
+pub fn descriptor_rotate_bits(Descriptor, Int) -> Descriptor
+
+pub fn descriptor_set_checksum(Array[Descriptor]) -> Int
+
+pub fn descriptor_signature(Descriptor) -> DescriptorSignature
+
+pub fn descriptor_suffix(Descriptor, Int) -> Descriptor
+
+pub fn descriptor_top_k_vote(Array[Array[Match]], Int) -> Array[Int]
+
+pub fn descriptor_unique_count(Array[Descriptor]) -> Int
+
+pub fn descriptor_unpack_bits(Descriptor, Int) -> Array[Bool]
+
+pub fn descriptor_variance_profile(Array[Descriptor]) -> Array[Double]
+
+pub fn descriptor_vote(Array[Descriptor]) -> Descriptor
+
+pub fn descriptor_xor(Descriptor, Descriptor) -> Descriptor
+
+pub fn descriptor_zero(Int) -> Descriptor
+
+pub fn descriptors_equal(Descriptor, Descriptor) -> Bool
 
 pub fn detect_fast(GrayImage, Int, Bool) -> Array[Keypoint]
 
+pub fn detect_fast_with_config(GrayImage, FastConfig) -> Array[Keypoint]
+
+pub fn displacement_residuals(Array[Match], Array[Keypoint], Array[Keypoint]) -> Array[Double]
+
+pub fn distance_to_line(FloatPoint2, FloatPoint2, FloatPoint2) -> Double
+
+pub fn edge_density(GrayImage, Int) -> Double
+
+pub fn edge_strength(GrayImage) -> GrayImage
+
+pub fn edge_threshold(GrayImage, Int) -> GrayImage
+
+pub fn enforce_unique_train_matches(Array[Match]) -> Array[Match]
+
+pub fn estimate_affine_from_points(Array[FloatPoint2], Array[FloatPoint2]) -> AffineTransform?
+
+pub fn estimate_homography(Array[FloatPoint2], Array[FloatPoint2]) -> Homography?
+
+pub fn evaluate_affine_matches(AffineTransform, Array[Match], Array[Keypoint], Array[Keypoint], Double) -> MatchQuality
+
+pub fn evaluate_fast_thresholds(GrayImage, Array[Int]) -> Array[ThresholdTrial]
+
+pub fn evaluate_homography_matches(Homography, Array[Match], Array[Keypoint], Array[Keypoint], Double) -> MatchQuality
+
 pub fn extract_features(GrayImage, Int) -> (Array[Keypoint], Array[Descriptor])
+
+pub fn extract_multiscale_features(GrayImage, FastConfig, OrbConfig, Int) -> (Array[Keypoint], Array[Descriptor])
+
+pub fn feature_count_difference(Array[Keypoint], Array[Keypoint]) -> Int
+
+pub fn feature_density(Array[Keypoint], Int, Int) -> Double
+
+pub fn feature_quality_report(Array[Keypoint], Int, Int, Int) -> FeatureQualityReport
+
+pub fn feature_response_curve(GrayImage, Array[Int]) -> Array[Double]
+
+pub fn filter_matches_by_affine(AffineTransform, Array[Match], Array[Keypoint], Array[Keypoint], Double) -> Array[Match]
+
+pub fn filter_matches_by_displacement(Array[Match], Array[Keypoint], Array[Keypoint], Double) -> Array[Match]
+
+pub fn filter_matches_by_homography(Homography, Array[Match], Array[Keypoint], Array[Keypoint], Double) -> Array[Match]
+
+pub fn filter_regions(Array[RegionStats], Int, Int) -> Array[RegionStats]
+
+pub fn filter_tracks_by_velocity(Array[FeatureTrack], FloatPoint2, Double) -> Array[FeatureTrack]
+
+pub fn fit_affine_matches(Array[Match], Array[Keypoint], Array[Keypoint]) -> AffineFitResult
+
+pub fn fit_affine_points(Array[FloatPoint2], Array[FloatPoint2]) -> AffineFitResult
+
+pub fn format_benchmark_aggregate(BenchmarkAggregate) -> String
+
+pub fn format_benchmark_summary(BenchmarkResult) -> String
+
+pub fn format_feature_snapshot(FeatureSnapshot) -> String
+
+pub fn format_keypoint(Keypoint) -> String
+
+pub fn format_pipeline_report(PipelineReport) -> String
+
+pub fn format_pipeline_summary(PipelineResult) -> String
+
+pub fn format_point(FloatPoint2) -> String
+
+pub fn format_quality_dashboard(QualityDashboard) -> String
+
+pub fn format_quality_gate(PipelineQualityGate) -> String
+
+pub fn format_rect(Rect) -> String
+
+pub fn format_snapshot_delta(SnapshotDelta) -> String
 
 pub fn full_feature_pipeline(GrayImage, GrayImage, Int, Double, Double) -> RansacResult
 
+pub fn gaussian_blur(GrayImage, Int) -> GrayImage
+
+pub fn geometry_quality_score(GeometryQuality, Double) -> Double
+
+pub fn gradient_energy(GrayImage, Rect) -> Double
+
+pub fn gradient_magnitude(GradientField) -> GrayImage
+
+pub fn gradient_orientation(GradientField) -> Array[Double]
+
 pub fn hamming_distance(Descriptor, Descriptor) -> Int
+
+pub fn homography_corners(Homography, Int, Int) -> Array[FloatPoint2]
+
+pub fn homography_from_affine(AffineTransform) -> Homography
+
+pub fn homography_is_orientation_preserving(Homography, Int, Int) -> Bool
+
+pub fn homography_quality(HomographyRansacResult) -> Double
+
+pub fn homography_quality_report(Homography, Array[FloatPoint2], Array[FloatPoint2]) -> GeometryQuality
+
+pub fn homography_residual_profile(Homography, Array[FloatPoint2], Array[FloatPoint2]) -> Array[Double]
+
+pub fn image_add(GrayImage, GrayImage) -> GrayImage
+
+pub fn image_area(GrayImage) -> Int
+
+pub fn image_blend(GrayImage, GrayImage, Double) -> GrayImage
+
+pub fn image_difference(GrayImage, GrayImage) -> GrayImage
+
+pub fn image_has_pixels(GrayImage) -> Bool
+
+pub fn image_mean(GrayImage) -> Double
+
+pub fn image_moments(GrayImage) -> (Double, Double, Int, Int)
+
+pub fn image_mse(GrayImage, GrayImage) -> Double
+
+pub fn image_overlap_mask(GrayImage, GrayImage) -> GrayImage
+
+pub fn image_similarity(GrayImage, GrayImage) -> Double
+
+pub fn image_subtract(GrayImage, GrayImage) -> GrayImage
+
+pub fn image_variance(GrayImage) -> Double
+
+pub fn initialize_tracks(Array[Keypoint], Array[Descriptor], Int) -> Array[FeatureTrack]
+
+pub fn inlier_centroid(Array[Match], Array[Keypoint]) -> FloatPoint2
+
+pub fn inlier_mask(Array[Double], Double) -> Array[Bool]
+
+pub fn inlier_ratio_percent(Double) -> Double
+
+pub fn is_degenerate_polygon(Array[FloatPoint2], Double) -> Bool
+
+pub fn is_degenerate_triangle(FloatPoint2, FloatPoint2, FloatPoint2, Double) -> Bool
+
+pub fn keypoint_bounds(Array[Keypoint]) -> Rect
+
+pub fn keypoint_centroid(Array[Keypoint]) -> FloatPoint2
+
+pub fn keypoint_grid_counts(Array[Keypoint], Int, Int, Int, Int) -> Array[Int]
+
+pub fn keypoint_octave_histogram(Array[Keypoint], Int) -> Array[Int]
+
+pub fn keypoint_orientation_histogram(Array[Keypoint], Int) -> Array[Int]
+
+pub fn keypoint_patch_statistics(GrayImage, Array[Keypoint], Int) -> Array[PatchStats]
+
+pub fn keypoint_response_histogram(Array[Keypoint], Int, Double, Double) -> Array[Int]
+
+pub fn keypoint_response_sum(Array[Keypoint]) -> Double
+
+pub fn keypoint_response_variance(Array[Keypoint]) -> Double
+
+pub fn keypoint_scale_histogram(Array[Keypoint], Int) -> Array[Int]
+
+pub fn keypoints_in_rect(Array[Keypoint], Rect) -> Array[Keypoint]
 
 pub fn knn_match(Array[Descriptor], Array[Descriptor], Int) -> Array[Array[Match]]
 
+pub fn label_components(GrayImage) -> Array[RegionStats]
+
+pub fn laplacian_response(GrayImage) -> GrayImage
+
+pub fn largest_region(Array[RegionStats]) -> RegionStats?
+
+pub fn line_intersection(FloatPoint2, FloatPoint2, FloatPoint2, FloatPoint2) -> FloatPoint2?
+
+pub fn local_binary_pattern(GrayImage, Int) -> GrayImage
+
+pub fn local_contrast(GrayImage, Int) -> GrayImage
+
+pub fn local_mean(GrayImage, Int) -> GrayImage
+
+pub fn local_variance(GrayImage, Int) -> Array[Double]
+
 pub fn match_and_filter(Array[Descriptor], Array[Descriptor], Double) -> Array[Match]
+
+pub fn match_coverage(Array[Match], Int, Int) -> Double
 
 pub fn match_descriptors(Array[Descriptor], Array[Descriptor]) -> Array[Match]
 
+pub fn match_distance_histogram(Array[Match], Int, Int) -> Array[Int]
+
+pub fn match_distance_mean(Array[Match]) -> Double
+
+pub fn match_distance_percentile(Array[Match], Double) -> Int
+
+pub fn match_distance_variance(Array[Match]) -> Double
+
+pub fn match_pair_consistency(Match, Match, Array[Keypoint], Array[Keypoint], Double) -> Bool
+
+pub fn match_quality_curve(Array[Match], Array[Int]) -> Array[Double]
+
+pub fn match_reciprocal_rank(Array[Match], Int, Int) -> Double
+
+pub fn match_stats(Array[Match]) -> MatchStats
+
+pub fn match_with_policy(Array[Descriptor], Array[Descriptor], MatchPolicy) -> Array[Match]
+
+pub fn median_filter(GrayImage, Int) -> GrayImage
+
+pub fn median_match_displacement(Array[Match], Array[Keypoint], Array[Keypoint]) -> FloatPoint2
+
+pub fn merge_match_sets(Array[Match], Array[Match]) -> Array[Match]
+
+pub fn model_residual_summary(Homography, Array[FloatPoint2], Array[FloatPoint2], Double) -> ResidualSummary
+
+pub fn motion_histogram(Array[FeatureTrack], Int, Double) -> Array[Int]
+
+pub fn mutual_match(Array[Descriptor], Array[Descriptor], MatchPolicy) -> Array[Match]
+
+pub fn non_maximum_response(GrayImage, Int) -> GrayImage
+
+pub fn normalized_correlation(GrayImage, GrayImage) -> Double
+
+pub fn otsu_summary(GrayImage) -> ThresholdSummary
+
+pub fn otsu_threshold(GrayImage) -> Int
+
+pub fn pad_image(GrayImage, Int, Int) -> GrayImage
+
+pub fn percentile_filter(GrayImage, Int, Double) -> GrayImage
+
+pub fn photometric_report(GrayImage) -> PhotometricReport
+
+pub fn pipeline_descriptor_balance(PipelineResult) -> Double
+
+pub fn pipeline_feature_balance(PipelineResult) -> Double
+
+pub fn pipeline_fingerprint(PipelineResult) -> Int
+
+pub fn pipeline_inlier_distance(PipelineResult) -> Double
+
+pub fn pipeline_invariant_report(PipelineResult) -> Array[String]
+
+pub fn pipeline_is_usable(PipelineResult) -> Bool
+
+pub fn pipeline_quality_from_result(PipelineResult) -> PipelineQualityGate
+
+pub fn pipeline_quality_gate(Double, Int, Int, Double) -> PipelineQualityGate
+
+pub fn pipeline_summary_lines(PipelineResult) -> Array[String]
+
+pub fn point_bounds(Array[FloatPoint2]) -> Rect
+
+pub fn point_cloud_centroid(Array[FloatPoint2]) -> FloatPoint2
+
+pub fn point_distance(FloatPoint2, FloatPoint2) -> Double
+
+pub fn point_in_polygon(FloatPoint2, Array[FloatPoint2]) -> Bool
+
+pub fn point_spread(Array[FloatPoint2]) -> Double
+
+pub fn polygon_area(Array[FloatPoint2]) -> Double
+
+pub fn polygon_centroid(Array[FloatPoint2]) -> FloatPoint2
+
+pub fn polygon_is_convex(Array[FloatPoint2]) -> Bool
+
+pub fn polyline_length(Array[FloatPoint2]) -> Double
+
+pub fn project_to_segment(FloatPoint2, FloatPoint2, FloatPoint2) -> FloatPoint2
+
+pub fn projection_peaks(Array[Int], Int) -> Array[Int]
+
+pub fn pyramid_pixel_capacity(ImagePyramid) -> Int
+
+pub fn pyramid_translation_search(GrayImage, GrayImage, Int, Int) -> TranslationSearchResult
+
+pub fn quadrilateral_area(Int, Int) -> Double
+
+pub fn quadrilateral_condition(Array[FloatPoint2]) -> Double
+
+pub fn quality_dashboard_is_reproducible(QualityDashboard, QualityDashboard) -> Bool
+
+pub fn quality_gate_score(PipelineResult) -> Double
+
+pub fn quality_score_from_counts(Int, Int, Int) -> Double
+
+pub fn quality_weighted_match_score(Array[Match], Int) -> Double
+
+pub fn quantize_image(GrayImage, Int) -> GrayImage
+
+pub fn query_match_support(Array[Match], Int) -> Int
+
+pub fn rank_filter(GrayImage, Int, Int) -> GrayImage
+
 pub fn ransac_affine(Array[Match], Array[Keypoint], Array[Keypoint], Int, Double) -> RansacResult
 
+pub fn ransac_homography(Array[Match], Array[Keypoint], Array[Keypoint], Int, Double, Int) -> HomographyRansacResult
+
+pub fn ransac_required_iterations(Double, Double, Int, Int) -> Int
+
+pub fn ransac_success_probability(Int, Double, Int) -> Double
+
+pub fn ratio_difference(Double, Double) -> Double
+
 pub fn ratio_test(Array[Array[Match]], Double) -> Array[Match]
+
+pub fn rect_area(Rect) -> Int
+
+pub fn rect_contains(Rect, Point2) -> Bool
+
+pub fn rect_expand(Rect, Int) -> Rect
+
+pub fn rect_intersection(Rect, Rect) -> Rect
+
+pub fn rect_iou(Rect, Rect) -> Double
+
+pub fn rect_union(Rect, Rect) -> Rect
+
+pub fn region_mask(GrayImage, Int) -> GrayImage
+
+pub fn regions_total_area(Array[RegionStats]) -> Int
+
+pub fn registration_error(GrayImage, GrayImage) -> Double
+
+pub fn registration_score(GrayImage, GrayImage) -> Double
+
+pub fn report_is_empty(PipelineReport) -> Bool
+
+pub fn reprojection_error(Homography, FloatPoint2, FloatPoint2) -> Double
+
+pub fn reprojection_stats(Homography, Array[FloatPoint2], Array[FloatPoint2]) -> ReprojectionStats
+
+pub fn residual_maximum(Array[Double]) -> Double
+
+pub fn residual_mean(Array[Double]) -> Double
+
+pub fn residual_rms(Array[Double]) -> Double
+
+pub fn residuals_for_affine(AffineTransform, Array[Match], Array[Keypoint], Array[Keypoint]) -> Array[Double]
+
+pub fn residuals_for_homography(Homography, Array[Match], Array[Keypoint], Array[Keypoint]) -> Array[Double]
+
+pub fn result_delta_summary(PipelineResult, PipelineResult) -> String
+
+pub fn result_fingerprint(PipelineResult) -> Int
+
+pub fn results_have_same_shape(PipelineResult, PipelineResult) -> Bool
+
+pub fn row_projection(GrayImage) -> Array[Int]
+
+pub fn run_pipeline(GrayImage, GrayImage, FeatureConfig) -> PipelineResult
+
+pub fn safe_inlier_ratio(Int, Int) -> Double
+
+pub fn safe_match_ratio(Array[Match], Int) -> Double
+
+pub fn search_patch(GrayImage, GrayImage, Int, Int, Int) -> PatchSearchResult
+
+pub fn search_translation(GrayImage, GrayImage, Int, Int) -> TranslationSearchResult
+
+pub fn select_keypoints_grid(Array[Keypoint], Int, Int, Int, Int, Int) -> Array[Keypoint]
+
+pub fn simplify_polyline(Array[FloatPoint2], Double) -> Array[FloatPoint2]
+
+pub fn smooth_gaussian_like(GrayImage, Int, Double) -> GrayImage
+
+pub fn smooth_triangle(GrayImage, Int) -> GrayImage
+
+pub fn snapshot_features(Array[Keypoint], Array[Descriptor]) -> FeatureSnapshot
+
+pub fn sobel_gradients(GrayImage) -> GradientField
+
+pub fn stable_descriptor_bytes(Array[Descriptor]) -> Int
+
+pub fn stable_tracks(Array[FeatureTrack], Int, Double) -> Array[FeatureTrack]
+
+pub fn summarize_descriptors(Array[Descriptor]) -> DescriptorStats
+
+pub fn summarize_keypoints(Array[Keypoint]) -> KeypointStats
+
+pub fn summarize_match_graph(Array[Match], Int, Int) -> MatchGraphStats
+
+pub fn summarize_pyramid(ImagePyramid) -> PyramidSummary
+
+pub fn summarize_residuals(Array[Double], Double) -> ResidualSummary
+
+pub fn summarize_tracks(Array[FeatureTrack]) -> TrackSummary
+
+pub fn texture_histogram(GrayImage) -> Array[Int]
+
+pub fn threshold_difference(GrayImage, GrayImage, Int) -> GrayImage
+
+pub fn threshold_otsu(GrayImage) -> GrayImage
+
+pub fn threshold_sauvola(GrayImage, Int, Double, Double) -> GrayImage
+
+pub fn threshold_trial_area(Array[ThresholdTrial]) -> Double
+
+pub fn track_bounds(Array[FeatureTrack]) -> Rect
+
+pub fn track_coverage(Array[FeatureTrack], Int, Int) -> Double
+
+pub fn track_descriptor_consistency(FeatureTrack) -> Double
+
+pub fn track_descriptor_vote(FeatureTrack) -> Descriptor
+
+pub fn track_displacement(FeatureTrack) -> FloatPoint2
+
+pub fn track_path(Array[Keypoint]) -> Array[FloatPoint2]
+
+pub fn track_quality(FeatureTrack) -> Double
+
+pub fn track_quality_histogram(Array[FeatureTrack], Int) -> Array[Int]
+
+pub fn track_velocity(FeatureTrack) -> FloatPoint2
+
+pub fn tracks_in_rect(Array[FeatureTrack], Rect) -> Array[FeatureTrack]
+
+pub fn train_match_support(Array[Match], Int) -> Int
+
+pub fn transform_points(Homography, Array[FloatPoint2]) -> Array[FloatPoint2]
+
+pub fn transform_rect_corners(Homography, Rect) -> Array[FloatPoint2]
+
+pub fn translation_from_matches(Array[Match], Array[Keypoint], Array[Keypoint]) -> FloatPoint2
+
+pub fn triangle_area(FloatPoint2, FloatPoint2, FloatPoint2) -> Double
+
+pub fn unsharp_mask(GrayImage, Int, Double) -> GrayImage
+
+pub fn update_tracks(Array[FeatureTrack], Array[Keypoint], Array[Descriptor], Int, Double, Int) -> Array[FeatureTrack]
+
+pub fn validate_descriptor_lengths(Array[Descriptor]) -> Bool
+
+pub fn validate_descriptor_set(Array[Descriptor], Int) -> Bool
+
+pub fn validate_image_bytes(GrayImage) -> Bool
+
+pub fn validate_image_shape(GrayImage) -> Bool
+
+pub fn validate_keypoints(Array[Keypoint], Int, Int) -> Bool
+
+pub fn validate_match_indices(Array[Match], Int, Int) -> Bool
+
+pub fn validate_pipeline_result(PipelineResult) -> Bool
+
+pub fn validate_regions(Array[RegionStats], Int, Int) -> Bool
+
+pub fn validate_tracks(Array[FeatureTrack]) -> Bool
+
+pub fn warp_affine_image(GrayImage, AffineTransform, Int, Int, WarpOptions) -> GrayImage
+
+pub fn warp_homography_image(GrayImage, Homography, Int, Int, WarpOptions) -> GrayImage
+
+pub fn warp_valid_mask(Homography, Int, Int, Int, Int) -> GrayImage
 
 // Errors
 
 // Types and methods
+pub(all) struct AffineDecomposition {
+  scale_x : Double
+  scale_y : Double
+  rotation : Double
+  shear : Double
+  translation_x : Double
+  translation_y : Double
+  reflected : Bool
+}
+
+pub(all) struct AffineFitResult {
+  transform : AffineTransform
+  residuals : Array[Double]
+  mean_error : Double
+  maximum_error : Double
+  condition : Double
+  valid : Bool
+}
+
 pub(all) struct AffineTransform {
   a : Double
   b : Double
@@ -40,19 +699,257 @@ pub(all) struct AffineTransform {
 pub fn AffineTransform::apply(Self, Double, Double) -> (Double, Double)
 pub fn AffineTransform::identity() -> Self
 
+pub(all) struct BenchmarkAggregate {
+  count : Int
+  total_iterations : Int
+  total_features1 : Int
+  total_features2 : Int
+  total_matches : Int
+  mean_features1 : Double
+  mean_features2 : Double
+  mean_matches : Double
+  mean_inlier_ratio : Double
+  minimum_ms : Double
+  maximum_ms : Double
+  mean_ms : Double
+}
+
+pub(all) struct BenchmarkResult {
+  width : Int
+  height : Int
+  iterations : Int
+  features1 : Int
+  features2 : Int
+  matches : Int
+  inlier_ratio : Double
+  total_ms : Double
+}
+pub fn BenchmarkResult::new(Int, Int, Int, Int, Int, Int, Double, Double) -> Self
+
+pub(all) enum BorderMode {
+  Constant(Int)
+  Clamp
+  Reflect
+}
+
 pub(all) struct Descriptor {
   data : Array[Byte]
 }
 pub fn Descriptor::new(Int) -> Self
+
+pub(all) struct DescriptorBucketStats {
+  bucket_count : Int
+  non_empty_buckets : Int
+  maximum_bucket : Int
+  mean_bucket : Double
+}
+
+pub(all) struct DescriptorIndex {
+  descriptors : Array[Descriptor]
+  buckets : Array[Array[Int]]
+}
+pub fn DescriptorIndex::build(Array[Descriptor]) -> Self
+pub fn DescriptorIndex::query(Self, Descriptor, Int) -> Array[Match]
+
+pub(all) struct DescriptorQualityReport {
+  count : Int
+  bytes : Int
+  unique : Int
+  duplicate_fraction : Double
+  bit_balance : Double
+  mean_nearest_distance : Double
+}
+
+pub(all) struct DescriptorSearchReport {
+  queries : Int
+  candidates : Int
+  comparisons : Int
+  mean_best_distance : Double
+  exact : Bool
+}
+
+pub(all) struct DescriptorSignature {
+  bytes : Int
+  checksum : Int
+  popcount : Int
+  zero_bytes : Int
+  nonzero_bytes : Int
+}
+
+pub(all) struct DescriptorStats {
+  count : Int
+  bytes : Int
+  mean_popcount : Double
+  minimum_popcount : Int
+  maximum_popcount : Int
+  bit_balance : Double
+}
+
+pub(all) struct FastConfig {
+  threshold : Int
+  contiguous : Int
+  use_nms : Bool
+  max_keypoints : Int
+  border : Int
+  min_response : Double
+}
+pub fn FastConfig::default() -> Self
+pub fn FastConfig::new(Int, Int, Bool, Int, Int, Double) -> Self
+
+pub(all) struct FeatureAssociation {
+  query_idx : Int
+  train_idx : Int
+  descriptor_distance : Int
+  spatial_distance : Double
+}
+
+pub(all) struct FeatureConfig {
+  fast : FastConfig
+  orb : OrbConfig
+  pyramid_levels : Int
+  match_k : Int
+  ratio : Double
+  use_ratio : Bool
+  enforce_unique : Bool
+  ransac_iters : Int
+  ransac_threshold : Double
+  seed : Int
+}
+pub fn FeatureConfig::default() -> Self
+
+pub(all) struct FeatureQualityReport {
+  count : Int
+  density : Double
+  response_mean : Double
+  response_variance : Double
+  spatial_coverage : Double
+  border_safe : Int
+}
+
+pub(all) struct FeatureSnapshot {
+  keypoints : Int
+  descriptors : Int
+  descriptor_bytes : Int
+  mean_response : Double
+  bounds : Rect
+  fingerprint : Int
+}
+
+pub(all) struct FeatureTrack {
+  id : Int
+  keypoints : Array[Keypoint]
+  descriptors : Array[Descriptor]
+  age : Int
+  missed : Int
+  active : Bool
+}
+pub fn FeatureTrack::append(Self, Keypoint, Descriptor) -> Self
+pub fn FeatureTrack::last_descriptor(Self) -> Descriptor?
+pub fn FeatureTrack::last_keypoint(Self) -> Keypoint?
+pub fn FeatureTrack::mark_missed(Self, Int) -> Self
+pub fn FeatureTrack::mean_response(Self) -> Double
+pub fn FeatureTrack::new(Int, Keypoint, Descriptor) -> Self
+pub fn FeatureTrack::path_length(Self) -> Double
+pub fn FeatureTrack::stability(Self) -> Double
+
+pub(all) struct FloatPoint2 {
+  x : Double
+  y : Double
+}
+pub fn FloatPoint2::new(Double, Double) -> Self
+
+pub(all) struct GeometryQuality {
+  count : Int
+  mean_error : Double
+  rms_error : Double
+  maximum_error : Double
+  passed : Bool
+}
+
+pub(all) struct GradientField {
+  width : Int
+  height : Int
+  gx : Array[Double]
+  gy : Array[Double]
+}
 
 pub(all) struct GrayImage {
   width : Int
   height : Int
   data : Array[Int]
 }
+pub fn GrayImage::clone(Self) -> Self
+pub fn GrayImage::crop(Self, Rect) -> Self
+pub fn GrayImage::fill(Self, Int) -> Unit
 pub fn GrayImage::get(Self, Int, Int) -> Int
+pub fn GrayImage::histogram(Self) -> Array[Int]
 pub fn GrayImage::new(Int, Int) -> Self
+pub fn GrayImage::normalize(Self) -> Self
+pub fn GrayImage::resize_nearest(Self, Int, Int) -> Self
+pub fn GrayImage::rotate_about(Self, Double, FloatPoint2, BorderMode) -> Self
+pub fn GrayImage::sample(Self, Int, Int, BorderMode) -> Int
+pub fn GrayImage::sample_bilinear(Self, Double, Double, BorderMode) -> Double
 pub fn GrayImage::set(Self, Int, Int, Int) -> Unit
+pub fn GrayImage::translate(Self, Int, Int, BorderMode) -> Self
+
+pub(all) struct Homography {
+  h00 : Double
+  h01 : Double
+  h02 : Double
+  h10 : Double
+  h11 : Double
+  h12 : Double
+  h20 : Double
+  h21 : Double
+  h22 : Double
+}
+pub fn Homography::identity() -> Self
+pub fn Homography::inverse(Self) -> Self?
+pub fn Homography::project(Self, FloatPoint2) -> FloatPoint2?
+
+pub(all) struct HomographyRansacResult {
+  model : Homography
+  inliers : Array[Match]
+  inlier_ratio : Double
+  stats : ReprojectionStats
+  iterations : Int
+  seed : Int
+}
+
+pub(all) struct ImagePyramid {
+  levels : Array[GrayImage]
+  scales : Array[Double]
+}
+pub fn ImagePyramid::build(GrayImage, Int) -> Self
+pub fn ImagePyramid::level(Self, Int) -> GrayImage
+pub fn ImagePyramid::level_count(Self) -> Int
+pub fn ImagePyramid::scale(Self, Int) -> Double
+pub fn ImagePyramid::to_level(Self, FloatPoint2, Int) -> FloatPoint2
+pub fn ImagePyramid::to_original(Self, FloatPoint2, Int) -> FloatPoint2
+
+pub(all) struct IntegralImage {
+  width : Int
+  height : Int
+  sums : Array[Double]
+  squares : Array[Double]
+}
+pub fn IntegralImage::build(GrayImage) -> Self
+pub fn IntegralImage::count(Self, Rect) -> Int
+pub fn IntegralImage::mean(Self, Rect) -> Double
+pub fn IntegralImage::square_sum(Self, Rect) -> Double
+pub fn IntegralImage::sum(Self, Rect) -> Double
+pub fn IntegralImage::variance(Self, Rect) -> Double
+pub fn IntegralImage::window(Self, Int, Int, Int) -> Rect
+
+pub(all) struct Kernel1D {
+  radius : Int
+  weights : Array[Double]
+  normalizer : Double
+}
+pub fn Kernel1D::box(Int) -> Self
+pub fn Kernel1D::gaussian_like(Int, Double) -> Self
+pub fn Kernel1D::normalized(Self) -> Self
+pub fn Kernel1D::triangle(Int) -> Self
 
 pub(all) struct Keypoint {
   x : Int
@@ -64,6 +961,29 @@ pub(all) struct Keypoint {
 }
 pub fn Keypoint::new(Int, Int, Double, Double) -> Self
 
+pub(all) struct KeypointGridIndex {
+  width : Int
+  height : Int
+  grid_width : Int
+  grid_height : Int
+  keypoints : Array[Keypoint]
+  buckets : Array[Array[Int]]
+}
+pub fn KeypointGridIndex::build(Array[Keypoint], Int, Int, Int, Int) -> Self
+pub fn KeypointGridIndex::maximum_occupancy(Self) -> Int
+pub fn KeypointGridIndex::nearest(Self, FloatPoint2, Double) -> Int?
+pub fn KeypointGridIndex::occupancy(Self) -> Array[Int]
+pub fn KeypointGridIndex::query_radius(Self, FloatPoint2, Double) -> Array[Int]
+
+pub(all) struct KeypointStats {
+  count : Int
+  mean_response : Double
+  minimum_response : Double
+  maximum_response : Double
+  centroid : FloatPoint2
+  bounds : Rect
+}
+
 pub(all) struct Match {
   query_idx : Int
   train_idx : Int
@@ -71,13 +991,238 @@ pub(all) struct Match {
 }
 pub fn Match::new(Int, Int, Int) -> Self
 
+pub(all) struct MatchGraphStats {
+  match_count : Int
+  query_nodes : Int
+  train_nodes : Int
+  unique_queries : Int
+  unique_trains : Int
+  duplicate_queries : Int
+  duplicate_trains : Int
+  mean_distance : Double
+  maximum_distance : Int
+}
+
+pub(all) struct MatchPolicy {
+  k : Int
+  ratio : Double
+  use_ratio : Bool
+  enforce_unique : Bool
+}
+pub fn MatchPolicy::default() -> Self
+pub fn MatchPolicy::new(Int, Double, Bool, Bool) -> Self
+
+pub(all) struct MatchQuality {
+  count : Int
+  inliers : Int
+  ratio : Double
+  mean_residual : Double
+  maximum_residual : Double
+}
+
+pub(all) struct MatchStats {
+  count : Int
+  minimum : Int
+  maximum : Int
+  mean : Double
+}
+
+pub(all) struct ModelComparison {
+  affine_score : Double
+  homography_score : Double
+  preferred : String
+  affine_inliers : Int
+  homography_inliers : Int
+}
+
+pub(all) struct OrbConfig {
+  patch_radius : Int
+  descriptor_bits : Int
+  use_orientation : Bool
+}
+pub fn OrbConfig::default() -> Self
+pub fn OrbConfig::new(Int, Int, Bool) -> Self
+
+pub(all) struct PatchSearchResult {
+  x : Int
+  y : Int
+  score : Double
+  evaluated : Int
+}
+
+pub(all) struct PatchStats {
+  count : Int
+  mean : Double
+  variance : Double
+  minimum : Int
+  maximum : Int
+  energy : Double
+}
+
+pub(all) struct PhotometricComparison {
+  overlap_width : Int
+  overlap_height : Int
+  mse : Double
+  mean_difference : Double
+  foreground_iou : Double
+}
+
+pub(all) struct PhotometricReport {
+  width : Int
+  height : Int
+  mean : Double
+  variance : Double
+  minimum : Int
+  maximum : Int
+  nonzero : Int
+  contrast : Double
+}
+
+pub(all) struct PipelineQualityGate {
+  passed : Bool
+  inlier_ratio : Double
+  inlier_count : Int
+  match_count : Int
+  maximum_error : Double
+  score : Double
+}
+
+pub(all) struct PipelineReport {
+  features1 : KeypointStats
+  features2 : KeypointStats
+  descriptors1 : DescriptorStats
+  descriptors2 : DescriptorStats
+  matches : MatchGraphStats
+  affine_quality : MatchQuality
+  homography_quality : MatchQuality
+  gate : PipelineQualityGate
+}
+
+pub(all) struct PipelineResult {
+  keypoints1 : Array[Keypoint]
+  keypoints2 : Array[Keypoint]
+  descriptors1 : Array[Descriptor]
+  descriptors2 : Array[Descriptor]
+  matches : Array[Match]
+  match_stats : MatchStats
+  affine : RansacResult
+  homography : HomographyRansacResult
+}
+
+pub(all) struct Point2 {
+  x : Int
+  y : Int
+}
+pub fn Point2::new(Int, Int) -> Self
+
+pub(all) struct PyramidSummary {
+  levels : Int
+  original_width : Int
+  original_height : Int
+  final_width : Int
+  final_height : Int
+  final_scale : Double
+}
+
+pub(all) struct QualityDashboard {
+  image1 : PhotometricReport
+  image2 : PhotometricReport
+  features1 : FeatureQualityReport
+  features2 : FeatureQualityReport
+  descriptors1 : DescriptorQualityReport
+  descriptors2 : DescriptorQualityReport
+  match_graph : MatchGraphStats
+  gate : PipelineQualityGate
+  fingerprint : Int
+}
+
 pub(all) struct RansacResult {
   transform : AffineTransform
   inliers : Array[Match]
   inlier_ratio : Double
 }
 
+pub(all) struct Rect {
+  x0 : Int
+  y0 : Int
+  x1 : Int
+  y1 : Int
+}
+pub fn Rect::new(Int, Int, Int, Int) -> Self
+
+pub(all) struct RegionStats {
+  label : Int
+  area : Int
+  bounds : Rect
+  centroid : FloatPoint2
+  mean : Double
+  minimum : Int
+  maximum : Int
+}
+
+pub(all) struct ReprojectionStats {
+  count : Int
+  mean : Double
+  rms : Double
+  maximum : Double
+}
+
+pub(all) struct ResidualSummary {
+  count : Int
+  mean : Double
+  median : Double
+  rms : Double
+  maximum : Double
+  inliers : Int
+  ratio : Double
+}
+
+pub(all) struct SnapshotDelta {
+  keypoints : Int
+  descriptors : Int
+  descriptor_bytes : Int
+  response_delta : Double
+  same_shape : Bool
+}
+
+pub(all) struct ThresholdSummary {
+  threshold : Int
+  foreground : Int
+  background : Int
+  mean_foreground : Double
+  mean_background : Double
+}
+
+pub(all) struct ThresholdTrial {
+  threshold : Int
+  keypoints : Int
+  descriptors : Int
+  mean_response : Double
+  score : Double
+}
+
+pub(all) struct TrackSummary {
+  count : Int
+  active : Int
+  total_age : Int
+  mean_age : Double
+  mean_path_length : Double
+  mean_stability : Double
+}
+
+pub(all) struct TranslationSearchResult {
+  dx : Int
+  dy : Int
+  score : Double
+  evaluated : Int
+}
+
+pub(all) struct WarpOptions {
+  border : BorderMode
+  bilinear : Bool
+}
+pub fn WarpOptions::default() -> Self
+
 // Type aliases
 
 // Traits
-

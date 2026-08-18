@@ -37,6 +37,48 @@ pub fn GrayImage::set(self : GrayImage, x : Int, y : Int, val : Int) -> Unit {
 }
 
 ///|
+pub(all) struct Point2 {
+  x : Int
+  y : Int
+}
+
+///|
+pub fn Point2::new(x : Int, y : Int) -> Point2 {
+  { x, y }
+}
+
+///|
+pub(all) struct FloatPoint2 {
+  x : Double
+  y : Double
+}
+
+///|
+pub fn FloatPoint2::new(x : Double, y : Double) -> FloatPoint2 {
+  { x, y }
+}
+
+///|
+pub(all) struct Rect {
+  x0 : Int
+  y0 : Int
+  x1 : Int
+  y1 : Int
+}
+
+///|
+pub fn Rect::new(x0 : Int, y0 : Int, x1 : Int, y1 : Int) -> Rect {
+  { x0, y0, x1, y1 }
+}
+
+///|
+pub(all) enum BorderMode {
+  Constant(Int)
+  Clamp
+  Reflect
+}
+
+///|
 pub(all) struct Keypoint {
   x : Int
   y : Int

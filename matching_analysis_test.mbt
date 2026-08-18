@@ -43,7 +43,11 @@ test "match distance percentile and displacement filter are stable" {
 
 ///|
 test "model match quality handles invalid indices" {
-  let matches : Array[Match] = [Match::new(0, 9, 1)]
+  let matches : Array[Match] = [
+    Match::new(0, 0, 1),
+    Match::new(0, 9, 1),
+    Match::new(0, 0, 1),
+  ]
   let keypoints : Array[Keypoint] = [Keypoint::new(0, 0, 1.0, 0.0)]
   let quality = evaluate_affine_matches(
     AffineTransform::identity(),
@@ -52,8 +56,34 @@ test "model match quality handles invalid indices" {
     keypoints,
     1.0,
   )
-  assert_eq(quality.count, 0)
+  assert_eq(quality.count, 2)
   assert_eq(inlier_mask([1.0, 2.0, 0.5], 1.0).length(), 3)
+  let filtered = filter_matches_by_affine(
+    AffineTransform::identity(),
+    matches,
+    keypoints,
+    keypoints,
+    0.0,
+  )
+  assert_eq(filtered.length(), 2)
+  assert_eq(filtered[0].query_idx, 0)
+  assert_eq(filtered[1].train_idx, 0)
+  let homography_filtered = filter_matches_by_homography(
+    Homography::identity(),
+    matches,
+    keypoints,
+    keypoints,
+    0.0,
+  )
+  assert_eq(homography_filtered.length(), 2)
+  let affine_result = ransac_affine(
+    [Match::new(0, 0, 1), Match::new(0, 9, 1)],
+    keypoints,
+    keypoints,
+    10,
+    1.0,
+  )
+  assert_eq(affine_result.inliers.length(), 1)
 }
 
 ///|

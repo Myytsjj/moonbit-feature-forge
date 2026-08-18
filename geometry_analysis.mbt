@@ -69,7 +69,13 @@ pub fn point_bounds(points : Array[FloatPoint2]) -> Rect {
     }
     i = i + 1
   }
-  Rect::new(left.to_int(), top.to_int(), right.to_int(), bottom.to_int())
+  // Rect uses half-open pixel coordinates, so include the maximum sample.
+  Rect::new(
+    left.to_int(),
+    top.to_int(),
+    right.to_int() + 1,
+    bottom.to_int() + 1,
+  )
 }
 
 ///|

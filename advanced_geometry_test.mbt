@@ -22,7 +22,11 @@ test "least squares affine fitting and residual summaries recover translation" {
 
 ///|
 test "RANSAC diagnostics and rectangle utilities clamp degenerate inputs" {
-  assert_true(ransac_required_iterations(0.99, 1.0, 4, 100) >= 1)
+  let relaxed = ransac_required_iterations(0.50, 0.50, 4, 100)
+  let strict = ransac_required_iterations(0.99, 0.50, 4, 100)
+  assert_true(relaxed >= 1)
+  assert_true(strict > relaxed)
+  assert_eq(ransac_required_iterations(0.99, 0.0, 4, 100), 100)
   assert_true(ransac_success_probability(100, 0.5, 3) > 0.0)
   assert_eq(rect_area(Rect::new(0, 0, 4, 3)), 12)
   assert_eq(

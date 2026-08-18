@@ -89,10 +89,19 @@ pub fn ransac_affine(
   max_iters : Int,
   threshold : Double,
 ) -> RansacResult {
-  if matches.length() < 3 {
+  let valid_matches : Array[Match] = []
+  let mut valid_index = 0
+  while valid_index < matches.length() {
+    let candidate = matches[valid_index]
+    if match_has_valid_points(candidate, kps1, kps2) {
+      valid_matches.push(candidate)
+    }
+    valid_index = valid_index + 1
+  }
+  if valid_matches.length() < 3 {
     return {
       transform: AffineTransform::identity(),
-      inliers: matches,
+      inliers: valid_matches,
       inlier_ratio: 0.0,
     }
   }
@@ -105,19 +114,19 @@ pub fn ransac_affine(
 
   let mut iter = 0
   while iter < max_iters {
-    let idx1 = rng.next(matches.length())
-    let mut idx2 = rng.next(matches.length())
+    let idx1 = rng.next(valid_matches.length())
+    let mut idx2 = rng.next(valid_matches.length())
     while idx2 == idx1 {
-      idx2 = rng.next(matches.length())
+      idx2 = rng.next(valid_matches.length())
     }
-    let mut idx3 = rng.next(matches.length())
+    let mut idx3 = rng.next(valid_matches.length())
     while idx3 == idx1 || idx3 == idx2 {
-      idx3 = rng.next(matches.length())
+      idx3 = rng.next(valid_matches.length())
     }
 
-    let m1 = matches[idx1]
-    let m2 = matches[idx2]
-    let m3 = matches[idx3]
+    let m1 = valid_matches[idx1]
+    let m2 = valid_matches[idx2]
+    let m3 = valid_matches[idx3]
 
     let kp1_1 = kps1[m1.query_idx]
     let kp1_2 = kps1[m2.query_idx]
@@ -139,8 +148,8 @@ pub fn ransac_affine(
       Some(tf) => {
         let current_inliers : Array[Match] = []
         let mut i = 0
-        while i < matches.length() {
-          let m = matches[i]
+        while i < valid_matches.length() {
+          let m = valid_matches[i]
           let src_kp = kps1[m.query_idx]
           let dst_kp = kps2[m.train_idx]
 
@@ -169,7 +178,7 @@ pub fn ransac_affine(
   }
 
   let ratio = Double::from_int(best_inliers.length()) /
-    Double::from_int(matches.length())
+    Double::from_int(valid_matches.length())
   { transform: best_transform, inliers: best_inliers, inlier_ratio: ratio }
 }
 

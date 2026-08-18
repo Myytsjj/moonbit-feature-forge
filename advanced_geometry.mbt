@@ -362,25 +362,17 @@ pub fn ransac_required_iterations(
   if safe_ratio <= 0.0 {
     return maximum
   }
-  let probability = 1.0 - safe_ratio
-  let mut denominator_power = 1.0
-  let mut i = 0
-  while i < sample_size {
-    denominator_power = denominator_power * probability
-    i = i + 1
+  if safe_confidence <= 0.0 {
+    return 1
   }
-  let mut numerator_power = 1.0
-  let mut count = 0
-  while count < 24 && numerator_power > 0.000001 {
-    numerator_power = numerator_power * denominator_power
-    count = count + 1
+  let sample_success = @math.pow(safe_ratio, Double::from_int(sample_size))
+  let failure_probability = 1.0 - sample_success
+  if failure_probability <= 0.0 {
+    return 1
   }
-  let confidence_factor = if safe_confidence >= 0.95 { 2 } else { 1 }
-  let estimate = if numerator_power <= 0.0 {
-    maximum
-  } else {
-    (count + 1) * confidence_factor
-  }
+  let estimate = @math.ceil(
+    @math.ln(1.0 - safe_confidence) / @math.ln(failure_probability),
+  ).to_int()
   if estimate > maximum {
     maximum
   } else if estimate < 1 {

@@ -474,13 +474,29 @@ pub fn filter_matches_by_affine(
   keypoints2 : Array[Keypoint],
   threshold : Double,
 ) -> Array[Match] {
-  apply_match_mask(
-    matches,
-    inlier_mask(
-      residuals_for_affine(transform, matches, keypoints1, keypoints2),
-      threshold,
-    ),
-  )
+  let result : Array[Match] = []
+  let safe_threshold = if threshold < 0.0 { 0.0 } else { threshold }
+  let mut i = 0
+  while i < matches.length() {
+    let current = matches[i]
+    if valid_match_points(current, keypoints1, keypoints2) {
+      let source = keypoints1[current.query_idx]
+      let target = keypoints2[current.train_idx]
+      let (x, y) = transform.apply(
+        Double::from_int(source.x),
+        Double::from_int(source.y),
+      )
+      let residual = matching_distance(
+        FloatPoint2::new(x, y),
+        FloatPoint2::new(Double::from_int(target.x), Double::from_int(target.y)),
+      )
+      if residual <= safe_threshold {
+        result.push(current)
+      }
+    }
+    i = i + 1
+  }
+  result
 }
 
 ///|
@@ -491,13 +507,31 @@ pub fn filter_matches_by_homography(
   keypoints2 : Array[Keypoint],
   threshold : Double,
 ) -> Array[Match] {
-  apply_match_mask(
-    matches,
-    inlier_mask(
-      residuals_for_homography(model, matches, keypoints1, keypoints2),
-      threshold,
-    ),
-  )
+  let result : Array[Match] = []
+  let safe_threshold = if threshold < 0.0 { 0.0 } else { threshold }
+  let mut i = 0
+  while i < matches.length() {
+    let current = matches[i]
+    if valid_match_points(current, keypoints1, keypoints2) {
+      let source = FloatPoint2::new(
+        Double::from_int(keypoints1[current.query_idx].x),
+        Double::from_int(keypoints1[current.query_idx].y),
+      )
+      let target = FloatPoint2::new(
+        Double::from_int(keypoints2[current.train_idx].x),
+        Double::from_int(keypoints2[current.train_idx].y),
+      )
+      let projected = match model.project(source) {
+        None => FloatPoint2::new(1000000000.0, 1000000000.0)
+        Some(value) => value
+      }
+      if matching_distance(projected, target) <= safe_threshold {
+        result.push(current)
+      }
+    }
+    i = i + 1
+  }
+  result
 }
 
 ///|

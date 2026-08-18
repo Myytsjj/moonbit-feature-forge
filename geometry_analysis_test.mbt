@@ -10,8 +10,9 @@ test "point bounds polygon area and hull handle degenerate input" {
   let bounds = point_bounds(points)
   assert_eq(bounds.x0, 0)
   assert_eq(bounds.y0, 0)
-  assert_eq(bounds.x1, 4)
-  assert_eq(bounds.y1, 3)
+  assert_eq(bounds.x1, 5)
+  assert_eq(bounds.y1, 4)
+  assert_true(rect_contains(bounds, Point2::new(4, 3)))
   assert_eq(
     polygon_area([
       FloatPoint2::new(0.0, 0.0),
